@@ -88,8 +88,8 @@ body {
   filter: blur(20px); pointer-events: none;
 }
 .logo {
-  font-family: 'Orbitron', sans-serif; font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 900; letter-spacing: 4px;
+  font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 6vw, 3.5rem);
+  font-weight: 900; letter-spacing: 4px; text-align: center; line-height: 1.15;
   background: linear-gradient(135deg, #00d4ff, #ffffff, #7b2fff);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;

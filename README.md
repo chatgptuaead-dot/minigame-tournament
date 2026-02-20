@@ -1,4 +1,4 @@
-# 🎮 Multiplier — Party Game
+# 🎮 Minigame Tournament
 
 A real-time multiplayer party game with 8 minigames and a tournament system for 2–12 players.
 
