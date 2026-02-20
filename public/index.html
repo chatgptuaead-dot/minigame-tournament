@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Multiplier — Party Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="stars"></div>
+
+  <!-- HOME SCREEN -->
+  <div id="screen-home" class="screen active">
+    <div class="logo-wrap">
+      <div class="logo-glow"></div>
+      <h1 class="logo">MULTIPLIER</h1>
+      <p class="tagline">Party Games · Tournament · Glory</p>
+    </div>
+    <div class="home-btns">
+      <button class="btn btn-primary" id="btn-create">CREATE ROOM</button>
+      <div class="join-row">
+        <input type="text" id="join-code" placeholder="ROOM CODE" maxlength="4" autocomplete="off" spellcheck="false">
+        <button class="btn btn-secondary" id="btn-join">JOIN</button>
+      </div>
+      <p id="home-error" class="error-msg"></p>
+    </div>
+    <div class="games-preview">
+      <span>🏓</span><span>⛳</span><span>🏹</span><span>⚽</span><span>🚗</span><span>🎯</span><span>🚀</span><span>🎰</span>
+    </div>
+  </div>
+
+  <!-- AVATAR SELECT SCREEN -->
+  <div id="screen-avatar" class="screen">
+    <div class="screen-header">
+      <h2>CREATE YOUR PLAYER</h2>
+      <p class="screen-sub">Choose your look and enter your name</p>
+    </div>
+    <div class="avatar-section">
+      <div class="avatar-display">
+        <div class="avatar-big" id="selected-avatar">🦊</div>
+      </div>
+      <div class="avatar-grid" id="avatar-grid"></div>
+    </div>
+    <div class="username-section">
+      <input type="text" id="username-input" placeholder="Enter your name..." maxlength="12" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" id="btn-confirm-avatar">LET'S GO!</button>
+    <p id="avatar-error" class="error-msg"></p>
+  </div>
+
+  <!-- LOBBY SCREEN -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-header">
+      <h2>LOBBY</h2>
+      <div class="room-code-display">
+        <span class="room-code-label">ROOM CODE</span>
+        <div class="room-code" id="lobby-code">----</div>
+        <button class="btn-copy" id="btn-copy-code" title="Copy code">📋</button>
+      </div>
+    </div>
+    <div class="lobby-players" id="lobby-players"></div>
+    <div class="lobby-footer">
+      <p class="lobby-hint" id="lobby-hint">Waiting for players... (2–12 players)</p>
+      <div class="bot-controls hidden" id="bot-controls">
+        <button class="btn btn-bot" id="btn-add-bot">🤖 Add Bot</button>
+        <button class="btn btn-bot btn-bot-remove" id="btn-remove-bot" disabled>✕ Remove Bot</button>
+      </div>
+      <button class="btn btn-ready" id="btn-ready">READY!</button>
+      <button class="btn btn-start-host hidden" id="btn-start-host">START GAME</button>
+    </div>
+  </div>
+
+  <!-- TOURNAMENT SCREEN -->
+  <div id="screen-tournament" class="screen">
+    <div class="tournament-header">
+      <h2 id="tournament-title">TOURNAMENT</h2>
+      <div class="game-badge" id="current-game-badge"></div>
+    </div>
+    <div class="bracket-container" id="bracket-container"></div>
+    <div class="round-announcement" id="round-announcement"></div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="screen">
+    <div class="game-hud" id="game-hud">
+      <div class="hud-player hud-p1" id="hud-p1"></div>
+      <div class="hud-game-name" id="hud-game-name"></div>
+      <div class="hud-player hud-p2" id="hud-p2"></div>
+    </div>
+    <div class="game-canvas-wrap" id="game-canvas-wrap">
+      <canvas id="game-canvas"></canvas>
+    </div>
+    <div class="game-overlay" id="game-overlay"></div>
+    <div class="mobile-controls" id="mobile-controls"></div>
+  </div>
+
+  <!-- SPECTATOR SCREEN -->
+  <div id="screen-spectator" class="screen">
+    <div class="spectator-header">
+      <h2>WATCHING THE ACTION</h2>
+      <p>You were eliminated — cheer for your favorites!</p>
+    </div>
+    <div class="spectator-matches" id="spectator-matches"></div>
+  </div>
+
+  <!-- WINNER SCREEN -->
+  <div id="screen-winner" class="screen">
+    <div class="winner-content">
+      <div class="confetti-wrap" id="confetti-wrap"></div>
+      <div class="trophy">🏆</div>
+      <h2 class="winner-title">CHAMPION!</h2>
+      <div class="winner-avatar" id="winner-avatar"></div>
+      <div class="winner-name" id="winner-name"></div>
+      <button class="btn btn-primary" id="btn-play-again">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/games/pingpong.js"></script>
+  <script src="js/games/reaction.js"></script>
+  <script src="js/games/archery.js"></script>
+  <script src="js/games/penalty.js"></script>
+  <script src="js/games/minigolf.js"></script>
+  <script src="js/games/racing.js"></script>
+  <script src="js/games/pinball.js"></script>
+  <script src="js/games/spaceblast.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
