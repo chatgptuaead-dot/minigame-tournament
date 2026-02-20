@@ -195,16 +195,19 @@ function startRound(room) {
     bracket: serializeTournament(tournament)
   });
 
-  for (const match of pending) {
-    const p1s = io.sockets.sockets.get(match.p1.id);
-    const p2s = io.sockets.sockets.get(match.p2.id);
-    if (p1s) p1s.emit('match-start', { matchId: match.id, game, opponent: { id: match.p2.id, username: match.p2.username, avatar: match.p2.avatar }, isPlayer1: true, bestOf: match.bestOf || null, seriesScore: match.seriesScore || null, gameNum: 1 });
-    if (p2s) p2s.emit('match-start', { matchId: match.id, game, opponent: { id: match.p1.id, username: match.p1.username, avatar: match.p1.avatar }, isPlayer1: false, bestOf: match.bestOf || null, seriesScore: match.seriesScore || null, gameNum: 1 });
+  // Delay match-start so players can see the bracket first
+  setTimeout(() => {
+    for (const match of pending) {
+      const p1s = io.sockets.sockets.get(match.p1.id);
+      const p2s = io.sockets.sockets.get(match.p2.id);
+      if (p1s) p1s.emit('match-start', { matchId: match.id, game, opponent: { id: match.p2.id, username: match.p2.username, avatar: match.p2.avatar }, isPlayer1: true, bestOf: match.bestOf || null, seriesScore: match.seriesScore || null, gameNum: 1 });
+      if (p2s) p2s.emit('match-start', { matchId: match.id, game, opponent: { id: match.p1.id, username: match.p1.username, avatar: match.p1.avatar }, isPlayer1: false, bestOf: match.bestOf || null, seriesScore: match.seriesScore || null, gameNum: 1 });
 
-    if (game === 'pingpong') startPingPongLoop(room, match);
-    if (game === 'reaction') startReactionGame(room, match);
-    if (match.p1?.isBot || match.p2?.isBot) handleBotMatch(room, match);
-  }
+      if (game === 'pingpong') startPingPongLoop(room, match);
+      if (game === 'reaction') startReactionGame(room, match);
+      if (match.p1?.isBot || match.p2?.isBot) handleBotMatch(room, match);
+    }
+  }, 4000);  // 4 seconds on bracket screen before game starts
 }
 
 function finishMatch(room, match, winner, scores) {

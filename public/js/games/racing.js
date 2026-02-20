@@ -19,6 +19,8 @@ class RacingGame {
     this.tiltX = 0;
     this.particles = [];
     this.done = false;
+    this.oppCar = null;       // opponent position received via relay
+    this.relayTick = 0;
     this._onKey = this._onKey.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
     this._onTilt = this._onTilt.bind(this);
@@ -145,6 +147,19 @@ class RacingGame {
 
     this.particles = this.particles.filter(p => p.life > 0.01);
     this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life *= 0.88; });
+
+    // Broadcast my car position to opponent every 3 frames
+    this.relayTick++;
+    if (this.relayTick % 3 === 0) {
+      this.socket.emit('game-relay', {
+        matchId: this.matchId,
+        data: { x: car.x, y: car.y, angle: car.angle, lap: car.lap, speed: car.speed, finished: car.finished }
+      });
+    }
+  }
+
+  handleRelay(data) {
+    this.oppCar = data;
   }
 
   _isOnTrack(x, y) {
@@ -242,6 +257,36 @@ class RacingGame {
     ctx.shadowBlur = 0;
     ctx.restore();
 
+    // Opponent car
+    if (this.oppCar) {
+      const opp = this.oppCar;
+      const oppColor = this.isPlayer1 ? '#ff4444' : '#00aaff';
+      ctx.save();
+      ctx.translate(opp.x, opp.y);
+      ctx.rotate(opp.angle + Math.PI / 2);
+      ctx.shadowColor = oppColor; ctx.shadowBlur = 12;
+      const cw = 14, ch = 22;
+      ctx.fillStyle = oppColor;
+      ctx.fillRect(-cw / 2, -ch / 2, cw, ch);
+      ctx.fillStyle = 'rgba(200,240,255,0.5)';
+      ctx.fillRect(-cw / 2 + 2, -ch / 2 + 2, cw - 4, ch * 0.35);
+      ctx.fillStyle = '#222';
+      ctx.fillRect(-cw / 2 - 3, -ch / 2 + 2, 5, 7);
+      ctx.fillRect(cw / 2 - 2,  -ch / 2 + 2, 5, 7);
+      ctx.fillRect(-cw / 2 - 3,  ch / 2 - 9, 5, 7);
+      ctx.fillRect(cw / 2 - 2,   ch / 2 - 9, 5, 7);
+      ctx.shadowBlur = 0;
+      ctx.restore();
+
+      // Opponent lap label above their car
+      ctx.save();
+      ctx.font = 'bold 10px Exo 2, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = oppColor;
+      ctx.fillText(`OPP L${opp.lap}`, opp.x, opp.y - 18);
+      ctx.restore();
+    }
+
     // Exhaust particles
     if (Math.abs(car.speed) > 1 && Math.random() < 0.5) {
       const ex = car.x - Math.cos(car.angle) * 12, ey = car.y - Math.sin(car.angle) * 12;
@@ -255,6 +300,11 @@ class RacingGame {
     ctx.fillText(`LAP ${car.lap}/${this.LAPS}`, 12, 28);
     ctx.font = '12px Exo 2, sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.fillText(`Speed: ${Math.round(Math.abs(car.speed) * 30)} km/h`, 12, 46);
+    if (this.oppCar) {
+      const oppColor = this.isPlayer1 ? '#ff4444' : '#00aaff';
+      ctx.font = 'bold 14px Orbitron, sans-serif'; ctx.fillStyle = oppColor; ctx.textAlign = 'right';
+      ctx.fillText(`OPP L${this.oppCar.lap}/${this.LAPS}`, W - 12, 28);
+    }
 
     // Lap progress bar
     ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(0, 50, W, 4);
